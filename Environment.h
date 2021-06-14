@@ -1,35 +1,36 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+#include <iostream>
+#include <string.h>
+#include <list>
+
+using namespace std;
 
 class Environment
 {
-    public:
-        Environment();
-        Environment(int gradeDimensionX, int gradeDimensionY);
 
-        // construtor usando dados armazenados em um arquivo
+public:
+    Environment();
+    Environment(int gridDimensionX, int gridDimensionY);
+    Environment(string fileName);
 
-        // Metodos
+    // if rectangle = false (obstacle is a cell) / retangle = true -> obstacle is a rectangle
+    void addObstacle(bool rectangle);
+    void addObstacle(string fileName);
+    void printGrid();
 
-            //  adicionar obstaculos a partir de um arquivo - (Flavio)
-            //  imprimir o ambiente no terminal - ( Duda)
-            //  armazenar o ambiente no um arquivo
-
-        // Metodos - Aguardando resposta
-
-            //  adicionar um obstaculo ao ambiente (celula)
-            //  adicionar um obstaculo ao ambiente (retangulo)
-
-    private:
-
+private:
     // Var
-    int _gradeDimensionX;
-    int _gradeDimensionY;
-    int **_grade;
+    int _gridDimensionX;
+    int _gridDimensionY;
+    int **_grid;
+
+    list<string> _fileLines;
 
     // Methodes
-
+    void allocateGridMemory();
+    void setGridFromFile(string fileName);
 
 };
 
