@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1623682103 source:/home/flavio/Documents/Programacao avancada/Roomba/main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	"Environment.h"
+
+1623682597 source:/home/flavio/Documents/Programacao avancada/Roomba/src/Environment.cpp
+	"Environment.h"
+	<fstream>
+
+1623682884 /home/flavio/Documents/Programacao avancada/Roomba/Environment.h
+	<iostream>
+	<string.h>
+	<list>
+
