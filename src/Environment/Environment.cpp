@@ -5,6 +5,8 @@
 // Default values
 #define DIMENSION_X 25
 #define DIMENSION_y 25
+#define STATION_POS_X 1
+#define STATION_POS_Y 0
 
 Environment::Environment()
 {
@@ -13,6 +15,7 @@ Environment::Environment()
     _gridDimensionY = DIMENSION_y;
 
     allocateGridMemory();
+    _grid[STATION_POS_X][STATION_POS_Y] = 2; // Define station in the cell (1,2)
 }
 
 Environment::Environment(int gridDimensionX, int gridDimensionY)
@@ -21,6 +24,13 @@ Environment::Environment(int gridDimensionX, int gridDimensionY)
     _gridDimensionY = gridDimensionY;
 
     allocateGridMemory();
+    _grid[STATION_POS_X][STATION_POS_Y] = 2; // Define station in the cell (1,2)
+}
+
+Environment::Environment(string fileName)
+{
+    setGridFromFile(fileName);
+    _grid[STATION_POS_X][STATION_POS_Y] = 2; // Define station in the cell (1,2)
 }
 
 void Environment::allocateGridMemory()
@@ -40,11 +50,6 @@ void Environment::allocateGridMemory()
     }
 }
 
-Environment::Environment(string fileName)
-{
-    setGridFromFile(fileName);
-}
-
 void Environment::setGridFromFile(string fileName)
 {
     string line;
@@ -52,10 +57,12 @@ void Environment::setGridFromFile(string fileName)
 
     environmentFile.open (fileName);
 
+    // Check file is open
     if(environmentFile.is_open())
     {
         while(getline(environmentFile, line))
         {
+            // puch each line to the list
             _fileLines.push_back(line);
         }
         environmentFile.close();
@@ -81,7 +88,6 @@ void Environment::setGridFromFile(string fileName)
         }
         it++;
     }
-     _grid[Ex][Ey] = 2; //só pra mostrar a estação
 }
 
 void Environment::printGrid() {
@@ -92,7 +98,6 @@ void Environment::printGrid() {
         }
         cout<<endl;
     }
-     _grid[Ex][Ey] = 2; //só pra mostrar a estação
 }
 
 void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obstacle
@@ -106,10 +111,10 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
         int rectangle_final_y = rand() %(_gridDimensionY) + (rectangle_init_y+2);
 
         // if the generated values for the rectangle coincides with the station point, then change the rectangle position (or size)
-        while(((rectangle_init_x<=Ex) && (Ex<=rectangle_final_x)) && ((rectangle_init_y<=Ey) && (Ey<=rectangle_final_y)))
+        while(((rectangle_init_x <= STATION_POS_X) && (STATION_POS_X <= rectangle_final_x)) && ((rectangle_init_y <= STATION_POS_Y) && (STATION_POS_Y <= rectangle_final_y)))
         {
             //check if the initial x value is too close to the boundary of the grid, if so, than reduce the rectangle "x" coordinates
-            if ((_gridDimensionX-rectangle_init_x)==2)
+            if ((_gridDimensionX - rectangle_init_x) == 2)
             {
                 rectangle_init_x -= 1;
                 rectangle_final_x -= 1;
@@ -120,29 +125,28 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
                 rectangle_init_x += 1;
             }
             // if the rectangle length is less than 2 blocks, increase the final position to make with at least 3 blocks.
-            if ((rectangle_final_x - rectangle_init_x)<2)
+            if ((rectangle_final_x - rectangle_init_x) < 2)
             {
                 rectangle_final_x += 1;
             }
         }
         // for the final rectangle range values, set to 1 the obstacles
-        for (int i=rectangle_init_x; i<=rectangle_final_x; i++)
+        for (int i = rectangle_init_x; i <= rectangle_final_x; i++)
         {
-            for (int j=rectangle_init_y; j<=rectangle_final_y; j++)
+            for (int j = rectangle_init_y; j <= rectangle_final_y; j++)
             {
                 _grid[i][j] = 1;
             }
         }
-    }
 
-
-    else
+    } else
     {
         //create cell in a random position and check if it matches the station position.
         //While it does, the code will generate other cell position in a random manner.
         int cell_x = rand() %_gridDimensionX + 0; //initialize cell x position in the grid
         int cell_y = rand() %_gridDimensionY + 0; //initialize cell y position in the grid
-        while(cell_x!=Ex && cell_y!=Ey)
+
+        while(cell_x != STATION_POS_X && cell_y != STATION_POS_Y)
         {
             cell_x = rand() %_gridDimensionX + 0;
             cell_y = rand() %_gridDimensionY + 0;

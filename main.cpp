@@ -1,3 +1,14 @@
+// --------------------------------------------------------------------
+
+//  Rommba
+
+//  UFPE - ENGENHARIA MECANICA
+//  Disciplina: Programacao Avancada
+//  Professor: Adrien Joan Sylvain Durand Petiteville
+//  Dupla: Eduarda Galindo e Flavio Cordeiro
+
+// ---------------------------------------------------------------------
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -23,7 +34,7 @@ int main ()
 
     if (option==1) //it would be better if this was a function called by main
     {
-        fileName = "test.txt";
+        fileName = "teste.txt";
         Environment *test = new Environment(fileName);
         test->printGrid();
     }

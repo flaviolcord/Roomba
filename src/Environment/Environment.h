@@ -11,6 +11,7 @@ class Environment
 {
 
 public:
+    // Class constructors
     Environment();
     Environment(int gridDimensionX, int gridDimensionY);
     Environment(string fileName);
@@ -25,7 +26,6 @@ private:
     int _gridDimensionX;
     int _gridDimensionY;
     int **_grid;
-    int Ex=1,Ey=0; //station position inside mesh
 
     list<string> _fileLines;
 
