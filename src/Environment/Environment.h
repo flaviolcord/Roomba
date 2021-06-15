@@ -25,6 +25,7 @@ private:
     int _gridDimensionX;
     int _gridDimensionY;
     int **_grid;
+    int Ex=1,Ey=0; //station position inside mesh
 
     list<string> _fileLines;
 

@@ -14,3 +14,18 @@
 	<string.h>
 	<list>
 
+1623728687 source:c:\users\maduk\onedrive\documentos\github\rommba\src\environment\environment.cpp
+	"Environment.h"
+	<fstream>
+
+1623725989 c:\users\maduk\onedrive\documentos\github\rommba\src\environment\environment.h
+	<iostream>
+	<string.h>
+	<list>
+
+1623728465 source:c:\users\maduk\onedrive\documentos\github\rommba\main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	"src/Environment/Environment.h"
+
