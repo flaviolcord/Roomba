@@ -14,6 +14,9 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="../Roomba" />
+					<Add directory="src/Robot" />
+					<Add directory="src" />
+					<Add directory="src/Robot/Models" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -24,6 +27,9 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="../Roomba" />
+					<Add directory="src/Robot" />
+					<Add directory="src" />
+					<Add directory="src/Robot/Models" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -37,6 +43,16 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Environment/Environment.cpp" />
 		<Unit filename="src/Environment/Environment.h" />
+		<Unit filename="src/Robot/Battery.cpp" />
+		<Unit filename="src/Robot/Battery.h" />
+		<Unit filename="src/Robot/Bumper.cpp" />
+		<Unit filename="src/Robot/Bumper.h" />
+		<Unit filename="src/Robot/Models/Robot_M1.cpp" />
+		<Unit filename="src/Robot/Models/Robot_M1.h" />
+		<Unit filename="src/Robot/Robot.cpp" />
+		<Unit filename="src/Robot/Robot.h" />
+		<Unit filename="src/Types/Position.cpp" />
+		<Unit filename="src/Types/Position.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 			<code_completion />

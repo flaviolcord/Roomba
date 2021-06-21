@@ -14,6 +14,7 @@
 #include <string>
 
 #include "src/Environment/Environment.h"
+#include "src/Types/Position.h"
 
 using namespace std;
 
