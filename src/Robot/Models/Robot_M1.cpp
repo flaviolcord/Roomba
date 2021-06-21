@@ -52,18 +52,15 @@ void Robot_M1::moveRobot()
     }
 
     // Define position to move
-    if(neighborsFree.size() > 1)
+    if(neighborsFree.size() >= 1)
     {
         // sortear position
         list<Position>::iterator it = neighborsFree.begin();
-        int idPos = rand() %neighborsFree.size() + 0;
+        int idPos = rand() %(neighborsFree.size()-1) + 0;
 
         advance(it, idPos);
         setRobotPos(*it);
 
-    } else if (neighborsFree.size() == 1)
-    {
-        setRobotPos(neighborsFree.front());
     } else {
         // Error
         cout<<"ERROR! Robot blocked!"<<endl;
@@ -79,7 +76,8 @@ void Robot_M1::clean()
         cout<<"ERROR! Environment ptr is null <<Robot_M1>>"<<endl;
         return ;
     }
-    while (getBatteryValue() > 2)
+
+    while (getBatteryValue() > 0.2*_batteryCharge)
     {
         moveRobot();
 
@@ -90,11 +88,12 @@ void Robot_M1::clean()
             // Clean
             // retira uma unidade
             updateBattery(0, false);
+            //_cellClean++;
             _environment->setPosValue(getRobotPos(), CLEANED);
 
         }
     }
-
+    // returnRobotToStation();
     _environment->setPosValue(getRobotPos(), 5);
 
 }
@@ -123,6 +122,7 @@ void Robot_M1::returnRobotToStation()
         robotPos = getRobotPos();
         stationPos = _environment->getStationPos();
 
+        updateBattery(0, false);
         // Calculate deltaX e deltaY
         deltaX = abs(robotPos.x() - stationPos.x());
         deltaY = abs(robotPos.y() - stationPos.y());

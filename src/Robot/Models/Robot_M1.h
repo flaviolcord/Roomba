@@ -16,15 +16,14 @@ public:
 
     // Methods
     void clean();
-
+    int getCellClean() {return _cellClean;}
 
 private:
     // Var
-    Robot *_robot;
     Environment *_environment;
     Bumper *_bumper;
     int _batteryCharge;
-    Position _robotPos;
+    int _cellClean;
 
     // Methods
     void moveRobot();

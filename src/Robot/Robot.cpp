@@ -18,9 +18,10 @@ Robot::Robot(Environment *environment, string name, int batteryCharge)
     setRobotPos(environment->getStationPos());
 }
 
-Robot::Robot(string fileName)
+Robot::Robot(Environment *environment, string fileName)
 {
-    //ctor
+    _environment = environment;
+    // File
 }
 
 void Robot::updateBattery(int value, bool charge)

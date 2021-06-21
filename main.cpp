@@ -34,11 +34,12 @@ int main ()
     cout << "Enter here your option (1 or 2): ";
     cin >> option;
 
+    Environment *test;
+
     if (option==1) //it would be better if this was a function called by main
     {
         fileName = "teste.txt";
-        Environment *test = new Environment(fileName);
-        test->printGrid();
+        test = new Environment(fileName);
     }
     if (option==2) //it would be better if this was a function called by main
     {
@@ -47,7 +48,7 @@ int main ()
         cin >> x;
         cout << "y: ";
         cin >> y;
-        Environment *test = new Environment(x, y);
+        test = new Environment(x, y);
         cout << "Add obstacle to your mesh. Choose: " << endl;
         cout << "1 - Create obstacle cell. " << endl;
         cout << "2 - Create obstacle shaped as an rectangle. " << endl;
@@ -68,15 +69,16 @@ int main ()
             obstacle_fileName = "teste_obstacles.txt";
             test->addObstacle(obstacle_fileName);
         }
-        test->printGrid();
-        cout<<"\n\n";
-
-        Robot_M1 *robot;
-
-        robot = new Robot_M1(test);
-        robot->clean();
-        test->printGrid();
     }
+    test->printGrid();
+    cout<<"\n\n";
+
+
+    Robot_M1 *robot;
+    robot = new Robot_M1(test);
+    robot->clean();
+
+    test->printGrid();
 
 
     return 0;

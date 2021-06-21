@@ -12,7 +12,7 @@ void Battery::dischargeBattery()
         _level -= 1;
     } else
     {
-        std::cout<<"Error! Battery discharged!"<<endl;
+        std::cout<<"Battery discharged!"<<endl;
     }
 }
 

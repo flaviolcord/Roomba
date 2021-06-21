@@ -10,7 +10,7 @@ public:
     // Class constructors
     Robot(Environment *environment);
     Robot(Environment *environment, string name, int batteryCharge);
-    Robot(string fileName);
+    Robot(Environment *environment, string fileName);
 
     // Methods
     void updateBattery(int value, bool charge);
@@ -22,6 +22,7 @@ public:
 
     // Setters
     void setRobotPos (Position pos) {_currentPos = pos;}
+    Environment* getEvironment() { return _environment;}
 
 private:
     // Var
