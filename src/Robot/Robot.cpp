@@ -40,6 +40,6 @@ bool Robot::batteryDischarged()
 
 Position Robot::getRobotPos()
 {
-    _currentPos = _environment->getRobotPos();
+    return _currentPos;
 }
 

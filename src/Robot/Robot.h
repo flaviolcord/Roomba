@@ -12,24 +12,24 @@ public:
     Robot(Environment *environment, string name, int batteryCharge);
     Robot(string fileName);
 
-    // Methodes
+    // Methods
     void updateBattery(int value, bool charge);
     bool batteryDischarged();
 
-    // getters
+    // Getters
     Position getRobotPos ();
     int getBatteryValue() {return _battery->getLevel();}
 
-    // setters
+    // Setters
     void setRobotPos (Position pos) {_currentPos = pos;}
 
 private:
-    // var
+    // Var
     string _name;
     Position _currentPos;
     Environment *_environment;
 
-    // mudar para o objeto Battery
+    // Battery
     Battery *_battery;
     int _batteryCharge;
 

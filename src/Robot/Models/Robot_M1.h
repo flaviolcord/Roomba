@@ -10,12 +10,13 @@
 class Robot_M1: public Robot
 {
 public:
+    // Class constructors
     Robot_M1(Environment *environment);
     Robot_M1(Environment *environment, string name, float batteryCharge);
 
-    // Methodes
+    // Methods
     void clean();
-    void moveRobot();
+
 
 private:
     // Var
@@ -24,6 +25,11 @@ private:
     Bumper *_bumper;
     int _batteryCharge;
     Position _robotPos;
+
+    // Methods
+    void moveRobot();
+    void returnRobotToStation();
+    void checkPos(Position &pos);
 };
 
 #endif // ROBOT_M1_H

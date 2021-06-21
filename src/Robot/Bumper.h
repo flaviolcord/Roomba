@@ -7,12 +7,13 @@ class Bumper
 {
 
 public:
+    // Class constructors
     Bumper(Environment *environment);
 
-    // Methodes
-    bool checkObstacle();
+    // Methods
+    bool checkObstacle(Position pos);
 private:
-
+    // Vars
     Environment *_environment;
 };
 

@@ -14,6 +14,7 @@
 #include <string>
 
 #include "src/Environment/Environment.h"
+#include "src/Robot/Models/Robot_M1.h"
 #include "src/Types/Position.h"
 
 using namespace std;
@@ -67,6 +68,13 @@ int main ()
             obstacle_fileName = "teste_obstacles.txt";
             test->addObstacle(obstacle_fileName);
         }
+        test->printGrid();
+        cout<<"\n\n";
+
+        Robot_M1 *robot;
+
+        robot = new Robot_M1(test);
+        robot->clean();
         test->printGrid();
     }
 

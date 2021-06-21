@@ -25,9 +25,11 @@ public:
     Position getStationPos() { return _stationPos;}
     Position getRobotPos() {return _robotPosition;}
     int getPosValue(Position pos) {return _grid[pos.x()][pos.y()];}
+    int getDimensionX() {return _gridDimensionX;}
+    int getDimensionY() {return _gridDimensionY;}
 
     // setters
-    void setGridValue(Position pos, int value) {_grid[pos.x()][pos.y()] = value;}
+    void setPosValue(Position pos, int value) {_grid[pos.x()][pos.y()] = value;}
 
     void printGrid();
 
@@ -41,7 +43,7 @@ private:
 
     list<string> _fileLines;
 
-    // Methodes
+    // Methods
     void allocateGridMemory();
     void setGridFromFile(string fileName);
 
