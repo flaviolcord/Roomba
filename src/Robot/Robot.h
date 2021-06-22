@@ -1,8 +1,8 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "src/Environment/Environment.h"
-#include "src/Robot/Battery.h"
+#include "Environment/Environment.h"
+#include "Robot/Battery.h"
 
 class Robot
 {

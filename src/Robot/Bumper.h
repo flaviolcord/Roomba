@@ -1,7 +1,7 @@
 #ifndef BUMPER_H
 #define BUMPER_H
 
-#include "src/Environment/Environment.h"
+#include "Environment/Environment.h"
 
 class Bumper
 {

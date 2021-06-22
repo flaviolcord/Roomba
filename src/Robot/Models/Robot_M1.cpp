@@ -1,6 +1,6 @@
 #include "Robot_M1.h"
 
-#define DEFAULT_BATTERY 100
+#define DEFAULT_BATTERY 200
 #define UNCLEAN 0
 #define STATION 2
 #define CLEANED 3
@@ -19,6 +19,8 @@ Robot_M1::Robot_M1(Environment *environment, string name, float batteryCharge) :
     _bumper = new Bumper(environment);
     _batteryCharge = batteryCharge;
 }
+
+
 
 void Robot_M1::moveRobot()
 {
@@ -54,7 +56,7 @@ void Robot_M1::moveRobot()
     // Define position to move
     if(neighborsFree.size() >= 1)
     {
-        // sortear position
+        // sort position
         list<Position>::iterator it = neighborsFree.begin();
         int idPos = rand() %(neighborsFree.size()-1) + 0;
 
@@ -67,87 +69,131 @@ void Robot_M1::moveRobot()
     }
 }
 
+
+
 void Robot_M1::clean()
 {
     // check if _environment = nullptr
     Position robotPos;
+    Position pos;
+    int it(0);
     if(_environment == nullptr)
     {
         cout<<"ERROR! Environment ptr is null <<Robot_M1>>"<<endl;
         return ;
     }
-
-    while (getBatteryValue() > 0.2*_batteryCharge)
+    int _cellUnclean=0;
+    for (int i=0;i<_environment->getDimensionY();i++)
     {
-        moveRobot();
-
-        //Check if the cell is clean
-
-        if(_environment->getPosValue(getRobotPos()) == UNCLEAN)
+        for (int j=0;j<_environment->getDimensionX();j++)
         {
-            // Clean
-            // retira uma unidade
-            updateBattery(0, false);
-            //_cellClean++;
-            _environment->setPosValue(getRobotPos(), CLEANED);
-
+            pos.setPosition(true, j, i);
+            if (_environment->getPosValue(pos)==0)
+                _cellUnclean++;
         }
     }
-    // returnRobotToStation();
-    _environment->setPosValue(getRobotPos(), 5);
 
+    while (_cellUnclean>0 && it<600)
+    {
+        while (getBatteryValue() > 0.2*_batteryCharge)
+        {
+            moveRobot();
+
+            //Check if the cell is clean
+
+            if(_environment->getPosValue(getRobotPos()) == UNCLEAN)
+            {
+                // Clean
+                // retira uma unidade
+                updateBattery(0, false);
+                _cellUnclean--; //reduce the number of uncleaned cells
+                _environment->setPosValue(getRobotPos(), CLEANED);
+                cout << getRobotPos().y() << ", " << getRobotPos().x() << endl;
+            }
+        }
+        returnRobotToStation();
+        it++;
+    }
+    cout << _cellUnclean << endl;
 }
 
 void Robot_M1::checkPos(Position &pos)
 {
-    if(pos.x() < 0 || pos.x() > _environment->getDimensionX())
+    if(pos.x() < 0 || pos.x() > (_environment->getDimensionX()-1))
     {
         pos.setInvalid();
     }
 
-    if(pos.y() < 0 || pos.y() > _environment->getDimensionY())
+    if(pos.y() < 0 || pos.y() > (_environment->getDimensionY()-1))
     {
         pos.setInvalid();
     }
 }
 
-// Incompleta - nao verifica obstaculos
 void Robot_M1::returnRobotToStation()
 {
     Position robotPos, stationPos;
     int deltaX, deltaY;
+    int sign_dX, sign_dY;
+    int move_rob;
+    Position pos1, pos2;
+    stationPos = _environment->getStationPos();
 
-    while (getRobotPos() != _environment->getStationPos() && getBatteryValue() > 0)
+    //cout << "in: " << getRobotPos().x() << "," << getRobotPos().y() << endl;
+    while ((robotPos != stationPos) && (getBatteryValue() > 0))
     {
-        robotPos = getRobotPos();
-        stationPos = _environment->getStationPos();
-
-        updateBattery(0, false);
+        //robotPos = getRobotPos();
+        move_rob=0;
         // Calculate deltaX e deltaY
-        deltaX = abs(robotPos.x() - stationPos.x());
-        deltaY = abs(robotPos.y() - stationPos.y());
+        deltaX = (stationPos.x() - robotPos.x());
+        deltaY = (stationPos.y() - robotPos.y());
 
-        if(deltaX > 0)
+        sign_dX = -1 * (deltaX < 0) + 1 * (deltaX > 0);
+        sign_dY = -1 * (deltaY < 0) + 1 * (deltaY > 0);
+
+        pos1 = Position(true, robotPos.x() + (sign_dX), robotPos.y());
+        checkPos(pos1);
+        if(!_bumper->checkObstacle(pos1) && !pos1.isInvalid() && deltaX!=0)
         {
-            if(robotPos.x() > stationPos.x())
+            robotPos = pos1;
+            move_rob=1;
+        }
+        else
+        {
+            pos2 = Position(true, robotPos.x(), robotPos.y() + sign_dY);
+            checkPos(pos2);
+            if(!_bumper->checkObstacle(pos2) && !pos2.isInvalid() && deltaY!=0)
             {
-                robotPos = Position(true, robotPos.x() - 1, robotPos.y());
-
-            } else {
-                robotPos = Position(true, robotPos.x() + 1, robotPos.y());
+                robotPos = pos2;
+                move_rob=1;
+            }
+            else
+            {
+                pos2 = Position(true, robotPos.x(), robotPos.y() - sign_dY);
+                checkPos(pos2);
+                if(!_bumper->checkObstacle(pos2) && !pos2.isInvalid() && deltaY!=0)
+                {
+                    robotPos = pos2;
+                    move_rob = 1;
+                }
             }
         }
-        if(deltaY > 0)
+        if (move_rob==0)
         {
-            if(robotPos.y() > stationPos.y())
+            pos1 = Position(true, robotPos.x() - (sign_dX), robotPos.y());
+            checkPos(pos1);
+            if(!_bumper->checkObstacle(pos1) && !pos1.isInvalid() && deltaX!=0)
             {
-                robotPos = Position(true, robotPos.x(), robotPos.y() - 1);
-
-            } else {
-                robotPos = Position(true, robotPos.x(), robotPos.y() + 1);
+                robotPos = pos1;
             }
         }
-        setRobotPos(robotPos);
+        updateBattery(0, false);
+    }
+    setRobotPos(robotPos);
+    if (getRobotPos() == _environment->getStationPos())
+    {
+        updateBattery(_batteryCharge - getBatteryValue(), 1);
+        _environment->setPosValue(getRobotPos(), 5);
     }
 }
 

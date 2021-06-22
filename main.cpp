@@ -52,7 +52,7 @@ int main ()
         cout << "Add obstacle to your mesh. Choose: " << endl;
         cout << "1 - Create obstacle cell. " << endl;
         cout << "2 - Create obstacle shaped as an rectangle. " << endl;
-        cout << "3 - Import obstacle coordinates from texte_obstacle.txt file. " << endl;
+        cout << "3 - Import obstacle coordinates from teste_obstacle.txt file. " << endl;
         cout << "Enter here your option: ";
         cin >> obstacle_option;
 
@@ -72,14 +72,9 @@ int main ()
     }
     test->printGrid();
     cout<<"\n\n";
-
-
     Robot_M1 *robot;
     robot = new Robot_M1(test);
     robot->clean();
-
     test->printGrid();
-
-
     return 0;
 }

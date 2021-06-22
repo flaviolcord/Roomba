@@ -2,9 +2,9 @@
 #define ROBOT_M1_H
 
 #include <list>
-#include "src/Environment/Environment.h"
-#include "src/Robot/Robot.h"
-#include "src/Robot/Bumper.h"
+#include "Environment/Environment.h"
+#include "Robot/Robot.h"
+#include "Robot/Bumper.h"
 
 
 class Robot_M1: public Robot

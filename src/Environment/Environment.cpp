@@ -47,7 +47,7 @@ void Environment::allocateGridMemory()
     }
 
     _stationPos = Position(true, STATION_POS_X, STATION_POS_Y);
-    _grid[_stationPos.x()][_stationPos.y()] = 2; // Define station in the cell (1,2)
+    _grid[_stationPos.y()][_stationPos.x()] = 2; // Define station in the cell (1,2)
 }
 
 void Environment::setGridFromFile(string fileName)
@@ -134,9 +134,9 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
             }
         }
         // for the final rectangle range values, set to 1 the obstacles
-        for (int i=rectangle_init_x; i<=rectangle_final_x; i++)
+        for (int i=rectangle_init_y; i<=rectangle_final_y; i++)
         {
-            for (int j=rectangle_init_y; j<=rectangle_final_y; j++)
+            for (int j=rectangle_init_x; j<=rectangle_final_x; j++)
             {
                 _grid[i][j] = 1;
             }
@@ -155,7 +155,7 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
             cell_x = rand() %_gridDimensionX + 0;
             cell_y = rand() %_gridDimensionY + 0;
         }
-        _grid[cell_x][cell_y] = 1; //set 1 to the cell obstacle
+        _grid[cell_y][cell_x] = 1; //set 1 to the cell obstacle
     }
 }
 

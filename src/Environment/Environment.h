@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <list>
-#include "src/Types/Position.h"
+#include "Types/Position.h"
 
 using namespace std;
 
@@ -24,12 +24,12 @@ public:
     // getters
     Position getStationPos() { return _stationPos;}
     Position getRobotPos() {return _robotPosition;}
-    int getPosValue(Position pos) {return _grid[pos.x()][pos.y()];}
+    int getPosValue(Position pos) {return _grid[pos.y()][pos.x()];}
     int getDimensionX() {return _gridDimensionX;}
     int getDimensionY() {return _gridDimensionY;}
 
     // setters
-    void setPosValue(Position pos, int value) {_grid[pos.x()][pos.y()] = value;}
+    void setPosValue(Position pos, int value) {_grid[pos.y()][pos.x()] = value;}
 
     void printGrid();
 
