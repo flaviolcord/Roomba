@@ -1,4 +1,5 @@
 #include "Robot_M1.h"
+#include <time.h>
 
 #define DEFAULT_BATTERY 200
 #define UNCLEAN 0
@@ -29,6 +30,7 @@ Robot_M1::Robot_M1(Environment *environment, string file_name) : Robot(environme
 
 void Robot_M1::moveRobot()
 {
+
     list<Position> neighborsFree;
     int sign = 1;
     Position robotPos = getRobotPos();
@@ -59,6 +61,7 @@ void Robot_M1::moveRobot()
     }
 
     // Define position to move
+    //srand (time(NULL));
     if(neighborsFree.size() >= 1)
     {
         // sort position
@@ -72,8 +75,6 @@ void Robot_M1::moveRobot()
         cout<<"ERROR! Robot blocked!"<<endl;
     }
 }
-
-
 
 void Robot_M1::clean()
 {

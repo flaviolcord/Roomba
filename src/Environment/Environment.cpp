@@ -1,5 +1,7 @@
 #include "Environment.h"
 #include <fstream>
+#include <chrono>
+#include <random>
 
 
 // Default values
@@ -100,21 +102,38 @@ void Environment::printGrid() {
     }
 }
 
+int Environment::generate_random(int minimum, int maximum)
+{
+    //Generation of random number between a range given by 'minimum' and 'maximum'
+
+    //Generate seed
+    std::random_device rd;
+    std::default_random_engine eng;
+    unsigned int t = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::seed_seq seed{ rd(), t };
+    eng.seed(seed);
+    std::mt19937 rng(eng());
+
+    // Get distribution
+    uniform_int_distribution <int> distribution(minimum, maximum);
+    int variable_sorted = distribution(rng);
+    distribution.reset();
+    return variable_sorted;
+}
+
 void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obstacle
 {
-    int Ex = 1;
-    int Ey = 0;
 
     if (rectangle)
     {
         // Generate random values for the rectangle range, with the minimum of 3 cells of length
-        int rectangle_init_x = rand() %(_gridDimensionX-2) + (0);
-        int rectangle_init_y = rand() %(_gridDimensionY-2) + (0);
-        int rectangle_final_x = rand() %(_gridDimensionX) + (rectangle_init_x+2);
-        int rectangle_final_y = rand() %(_gridDimensionY) + (rectangle_init_y+2);
+        int rectangle_init_x = generate_random(0, _gridDimensionX-3);
+        int rectangle_init_y = generate_random(0, _gridDimensionY-3);
+        int rectangle_final_x = generate_random(rectangle_init_x+2, _gridDimensionX-1);
+        int rectangle_final_y = generate_random(rectangle_init_y+2, _gridDimensionY-1);
 
         // if the generated values for the rectangle coincides with the station point, then change the rectangle position (or size)
-        while(((rectangle_init_x<=Ex) && (Ex<=rectangle_final_x)) && ((rectangle_init_y<=Ey) && (Ey<=rectangle_final_y)))
+        while(((rectangle_init_x<=_stationPos.x()) && (_stationPos.x()<=rectangle_final_x)) && ((rectangle_init_y<=_stationPos.y()) && (_stationPos.y()<=rectangle_final_y)))
         {
             //check if the initial x value is too close to the boundary of the grid, if so, than reduce the rectangle "x" coordinates
             if ((_gridDimensionX-rectangle_init_x)==2)
@@ -134,6 +153,7 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
             }
         }
         // for the final rectangle range values, set to 1 the obstacles
+
         for (int i=rectangle_init_y; i<=rectangle_final_y; i++)
         {
             for (int j=rectangle_init_x; j<=rectangle_final_x; j++)
@@ -150,7 +170,7 @@ void Environment::addObstacle(bool rectangle) //add rectangle or cell as an obst
         //While it does, the code will generate other cell position in a random manner.
         int cell_x = rand() %_gridDimensionX + 0; //initialize cell x position in the grid
         int cell_y = rand() %_gridDimensionY + 0; //initialize cell y position in the grid
-        while(cell_x!=Ex && cell_y!=Ey)
+        while(cell_x!=_stationPos.x() && cell_y!=_stationPos.y())
         {
             cell_x = rand() %_gridDimensionX + 0;
             cell_y = rand() %_gridDimensionY + 0;
