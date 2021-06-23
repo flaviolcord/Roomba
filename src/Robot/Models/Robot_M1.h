@@ -12,7 +12,8 @@ class Robot_M1: public Robot
 public:
     // Class constructors
     Robot_M1(Environment *environment);
-    Robot_M1(Environment *environment, string name, float batteryCharge);
+    Robot_M1(Environment *environment, string name, int batteryCapacity);
+    Robot_M1(Environment *environment, string file_name);
 
     // Methods
     void clean();
@@ -22,7 +23,7 @@ private:
     // Var
     Environment *_environment;
     Bumper *_bumper;
-    int _batteryCharge;
+    int _batteryCapacity;
     int _cellClean;
 
     // Methods

@@ -26,7 +26,11 @@ int main ()
     int x;
     int y;
     int obstacle_option;
+    int robot_data_opt;
+    int battery_capacity;
     string obstacle_fileName;
+    string robot_name;
+    string robot_file_name;
 
     cout << "Choose one of the options bellow:" << endl;
     cout << "1 - import grid from test.txt file" << endl;
@@ -36,12 +40,12 @@ int main ()
 
     Environment *test;
 
-    if (option==1) //it would be better if this was a function called by main
+    if (option==1)
     {
         fileName = "teste.txt";
         test = new Environment(fileName);
     }
-    if (option==2) //it would be better if this was a function called by main
+    if (option==2)
     {
         cout << "Enter here grid dimensions (enter an integer value): " << endl;
         cout << "x: ";
@@ -70,10 +74,37 @@ int main ()
             test->addObstacle(obstacle_fileName);
         }
     }
+
     test->printGrid();
     cout<<"\n\n";
     Robot_M1 *robot;
-    robot = new Robot_M1(test);
+
+    cout << "Choose one of the options bellow in order to insert robot into the grid: " << endl;
+    cout << "1 - Write robot data" << endl;
+    cout << "2 - Import robot data from file 'robot.txt'" << endl;
+    cout << "If you want to use the default data, enter any number different from 1 and 2"<< endl;
+    cout << "Enter here your option: ";
+    cin >> robot_data_opt;
+
+    if (robot_data_opt==1)
+    {
+        cout << "Enter robot name: ";
+        getline(cin,robot_name);
+        getline(cin,robot_name); //only one its not working
+        cout << "Enter robot battery capacity: ";
+        cin >> battery_capacity;
+        robot= new Robot_M1(test, robot_name, battery_capacity);
+
+    }
+    else if (robot_data_opt==2)
+    {
+        robot_file_name = "robot.txt";
+        robot = new Robot_M1(test, robot_file_name);
+    }
+    else
+    {
+        robot = new Robot_M1(test);
+    }
     robot->clean();
     test->printGrid();
     return 0;

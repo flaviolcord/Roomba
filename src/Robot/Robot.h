@@ -9,7 +9,7 @@ class Robot
 public:
     // Class constructors
     Robot(Environment *environment);
-    Robot(Environment *environment, string name, int batteryCharge);
+    Robot(Environment *environment, string name, int batteryCapacity);
     Robot(Environment *environment, string fileName);
 
     // Methods
@@ -32,7 +32,8 @@ private:
 
     // Battery
     Battery *_battery;
-    int _batteryCharge;
+    int _batteryCapacity;
+    list<string> _fileLines;
 
 };
 
