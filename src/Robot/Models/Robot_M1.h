@@ -17,7 +17,6 @@ public:
 
     // Methods
     void clean();
-    int getCellClean() {return _cellClean;}
 
 private:
     // Var

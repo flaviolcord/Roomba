@@ -1,10 +1,13 @@
 #include "Robot_M1.h"
-#include <time.h>
 
 #define DEFAULT_BATTERY 200
+#define INTERACTIONS_LIMIT 50
 #define UNCLEAN 0
+#define OBSTACLE 1
 #define STATION 2
 #define CLEANED 3
+#define ROBOT_STATION 5
+
 
 // Todos os parametros que Robot pode receber Robot_M1 deve poder receber tbm!
 Robot_M1::Robot_M1(Environment *environment) : Robot(environment)
@@ -30,15 +33,15 @@ Robot_M1::Robot_M1(Environment *environment, string file_name) : Robot(environme
 
 void Robot_M1::moveRobot()
 {
-
-    list<Position> neighborsFree;
     int sign = 1;
+    list<Position> neighborsFree;
     Position robotPos = getRobotPos();
     Position pos1, pos2;
 
     // Discharge the battery one unit of charge
     updateBattery(0, false);
-    // Find free positions
+
+    // Find free positions for the four directions
     for(int i = 0; i < 2; i++)
     {
         if(i == 1) { sign = -1;}
@@ -46,10 +49,12 @@ void Robot_M1::moveRobot()
         pos1 = Position(true, robotPos.x() + sign, robotPos.y());
         pos2 = Position(true, robotPos.x(), robotPos.y() + sign);
 
-        // check positions pos1 and pos2
+        // Check positions pos1 and pos2 are valid positions
         checkPos(pos1);
         checkPos(pos2);
 
+        // If each position is not an obstacle, the station position or a invalid position
+        // this position is saved in the list "neighborsFree"
         if(!_bumper->checkObstacle(pos1) && pos1 != _environment->getStationPos() && !pos1.isInvalid())
         {
             neighborsFree.push_back(pos1);
@@ -61,12 +66,13 @@ void Robot_M1::moveRobot()
     }
 
     // Define position to move
-    //srand (time(NULL));
+    // If neighborsFree.size() > 1 the position is chosen randomly
     if(neighborsFree.size() >= 1)
     {
         // sort position
         list<Position>::iterator it = neighborsFree.begin();
-        int idPos = rand() %(neighborsFree.size()-1) + 0;
+
+        int idPos = _environment->generate_random(0, (neighborsFree.size()-1));
         advance(it, idPos);
         setRobotPos(*it);
 
@@ -96,26 +102,27 @@ void Robot_M1::clean()
     {
         for (int j=0;j<_environment->getDimensionX();j++)
         {
+
             pos.setPosition(true, j, i);
-            if (_environment->getPosValue(pos)==0)
+            if (_environment->getPosValue(pos) == UNCLEAN) {
                 _cellUnclean++;
+            }
         }
     }
 
-    // while there is uncleaned cells and the robot had already returned to the station 600 times, make it move to clean
-    while (_cellUnclean>0 && it<600)
+    // while there is uncleaned cells and the robot had already returned to the station INTERACTIONS_LIMIT times, make it move to clean
+    while (_cellUnclean>0 && it < INTERACTIONS_LIMIT)
     {
         while (getBatteryValue() > 0.2*_batteryCapacity)
         {
-
+            // Move robot to the next cell
             moveRobot();
 
             //Check if the cell is clean
-
             if(_environment->getPosValue(getRobotPos()) == UNCLEAN)
             {
                 // Clean
-                // retira uma unidade
+                // Discharge the battery one unit of charge
                 updateBattery(0, false);
                 _cellUnclean--; //reduce the number of uncleaned cells
                 _environment->setPosValue(getRobotPos(), CLEANED);
@@ -123,7 +130,7 @@ void Robot_M1::clean()
         }
 
         returnRobotToStation();
-        if (getBatteryValue()==0)
+        if (batteryDischarged())
         {
             cout << "Could not go back to station" << endl;
             return;
@@ -131,9 +138,12 @@ void Robot_M1::clean()
 
         it++;
     }
+    cout<<"\n\n";
+    cout<<"The number of recharges is: "<<it<<endl;
     cout << "The number of remaining unclean cells is: " << _cellUnclean << endl;
 }
 
+// Check if the position is out of matrix
 void Robot_M1::checkPos(Position &pos)
 {
     if(pos.x() < 0 || pos.x() > (_environment->getDimensionX()-1))
@@ -158,7 +168,7 @@ void Robot_M1::returnRobotToStation()
     robotPos = getRobotPos();
     robotPos_old = robotPos;
 
-    while ((robotPos != stationPos) && (getBatteryValue() > 0))
+    while ((robotPos != stationPos) && !batteryDischarged())
     {
 
         move_rob = 0;
@@ -226,8 +236,8 @@ void Robot_M1::returnRobotToStation()
     setRobotPos(robotPos);
     if (getRobotPos() == stationPos)
     {
-        updateBattery(_batteryCapacity - getBatteryValue(), 1);
-        _environment->setPosValue(getRobotPos(), 5);
+        updateBattery(_batteryCapacity - getBatteryValue(), true);
+        _environment->setPosValue(getRobotPos(), ROBOT_STATION);
     }
 
 

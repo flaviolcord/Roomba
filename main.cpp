@@ -78,6 +78,7 @@ int main ()
     test->printGrid();
     cout<<"\n\n";
     Robot_M1 *robot;
+    int recommendedValue = 2*(test->getDimensionX()*test->getDimensionY());
 
     cout << "Choose one of the options bellow in order to insert robot into the grid: " << endl;
     cout << "1 - Write robot data" << endl;
@@ -91,7 +92,7 @@ int main ()
         cout << "Enter robot name: ";
         getline(cin,robot_name);
         getline(cin,robot_name); //only one its not working
-        cout << "Enter robot battery capacity: ";
+        cout << "Enter robot battery capacity (recommended value "<<recommendedValue<<"): ";
         cin >> battery_capacity;
         robot= new Robot_M1(test, robot_name, battery_capacity);
 
@@ -106,6 +107,7 @@ int main ()
         robot = new Robot_M1(test);
     }
     robot->clean();
+    cout<<endl;
     test->printGrid();
     return 0;
 }

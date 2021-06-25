@@ -52,6 +52,8 @@ Robot::Robot(Environment *environment, string fileName)
     setRobotPos(environment->getStationPos());
 }
 
+// If charge is true updateBattery charge the battery in value units
+// If charge is false updateBattery discharge the battery in -1 unit
 void Robot::updateBattery(int value, bool charge)
 {
     if(charge) {
@@ -62,6 +64,7 @@ void Robot::updateBattery(int value, bool charge)
     }
 }
 
+// When the battery level is equal to zero the robot stops
 bool Robot::batteryDischarged()
 {
     return (_battery->getLevel() == 0);

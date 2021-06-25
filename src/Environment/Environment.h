@@ -27,12 +27,14 @@ public:
     int getPosValue(Position pos) {return _grid[pos.y()][pos.x()];}
     int getDimensionX() {return _gridDimensionX;}
     int getDimensionY() {return _gridDimensionY;}
-    int generate_random(int minimum, int maximum);
+
 
     // setters
     void setPosValue(Position pos, int value) {_grid[pos.y()][pos.x()] = value;}
 
+    // Utils
     void printGrid();
+    int generate_random(int minimum, int maximum);
 
 private:
     // Var

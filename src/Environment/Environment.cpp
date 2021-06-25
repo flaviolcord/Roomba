@@ -50,6 +50,7 @@ void Environment::allocateGridMemory()
 
     _stationPos = Position(true, STATION_POS_X, STATION_POS_Y);
     _grid[_stationPos.y()][_stationPos.x()] = 2; // Define station in the cell (1,2)
+    cout<<"Valor grid: "<<_grid[_stationPos.y()][_stationPos.x()]<<endl;
 }
 
 void Environment::setGridFromFile(string fileName)
@@ -86,7 +87,9 @@ void Environment::setGridFromFile(string fileName)
         for(int j = 0; j < (*it).size(); j++)
         {
             elementValue = (*it).at(j);
-            _grid[i][j] = std::stoi(elementValue, nullptr, 10);
+            if(_grid[i][j] != 2) {
+                _grid[i][j] = std::stoi(elementValue, nullptr, 10);
+            }
         }
         it++;
     }
