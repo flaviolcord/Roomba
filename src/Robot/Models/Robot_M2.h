@@ -1,27 +1,26 @@
-#ifndef ROBOT_M1_H
-#define ROBOT_M1_H
+#ifndef ROBOT_M2_H
+#define ROBOT_M2_H
 
 #include <list>
 #include "Environment/Environment.h"
+#include "Robot/Laser.h"
 #include "Robot/Robot.h"
-#include "Robot/Bumper.h"
 
-
-class Robot_M1: public Robot
+class Robot_M2: public Robot
 {
 public:
     // Class constructors
-    Robot_M1(Environment *environment);
-    Robot_M1(Environment *environment, string name, int batteryCapacity);
-    Robot_M1(Environment *environment, string file_name);
+    Robot_M2(Environment *environment);
+    Robot_M2(Environment *environment, string name, int batteryCapacity);
+    Robot_M2(Environment *environment, string file_name);
 
     // Methods
     virtual void clean();
 
 private:
-    // Var
+     // Var
     Environment *_environment;
-    Bumper *_bumper;
+    Laser *_laser;
     int _batteryCapacity;
     int _cellClean;
 
@@ -31,4 +30,4 @@ private:
     void checkPos(Position &pos);
 };
 
-#endif // ROBOT_M1_H
+#endif // ROBOT_M2_H

@@ -47,16 +47,18 @@
 		<Unit filename="src/Robot/Battery.h" />
 		<Unit filename="src/Robot/Bumper.cpp" />
 		<Unit filename="src/Robot/Bumper.h" />
+		<Unit filename="src/Robot/Laser.cpp" />
+		<Unit filename="src/Robot/Laser.h" />
 		<Unit filename="src/Robot/Models/Robot_M1.cpp" />
 		<Unit filename="src/Robot/Models/Robot_M1.h" />
+		<Unit filename="src/Robot/Models/Robot_M2.cpp" />
+		<Unit filename="src/Robot/Models/Robot_M2.h" />
 		<Unit filename="src/Robot/Robot.cpp" />
 		<Unit filename="src/Robot/Robot.h" />
 		<Unit filename="src/Types/Position.cpp" />
 		<Unit filename="src/Types/Position.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
-			<code_completion />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

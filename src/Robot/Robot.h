@@ -12,6 +12,9 @@ public:
     Robot(Environment *environment, string name, int batteryCapacity);
     Robot(Environment *environment, string fileName);
 
+    // Virtual methods
+    virtual void clean()=0;
+
     // Methods
     void updateBattery(int value, bool charge);
     bool batteryDischarged();
@@ -35,6 +38,10 @@ private:
     Battery *_battery;
     int _batteryCapacity;
     list<string> _fileLines;
+
+    // Virtual methods
+    virtual void moveRobot()=0;
+    virtual void returnRobotToStation()=0;
 
 };
 

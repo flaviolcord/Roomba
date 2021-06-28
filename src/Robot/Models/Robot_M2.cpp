@@ -1,4 +1,4 @@
-#include "Robot_M1.h"
+#include "Robot_M2.h"
 
 #define DEFAULT_BATTERY 200
 #define INTERACTIONS_LIMIT 50
@@ -8,62 +8,55 @@
 #define CLEANED 3
 #define ROBOT_STATION 5
 
-
-Robot_M1::Robot_M1(Environment *environment) : Robot(environment)
+Robot_M2::Robot_M2(Environment *environment) : Robot(environment)
 {
     _environment = environment;
-    _bumper = new Bumper(environment);
+    _laser = new Laser(_environment);
     _batteryCapacity = DEFAULT_BATTERY;
 }
 
-Robot_M1::Robot_M1(Environment *environment, string name, int batteryCharge) : Robot(environment, name, batteryCharge)
+Robot_M2::Robot_M2(Environment *environment, string name, int batteryCharge) : Robot(environment, name, batteryCharge)
 {
     _environment = environment;
-    _bumper = new Bumper(environment);
+    _laser = new Laser(_environment);
     _batteryCapacity = batteryCharge;
 }
 
-Robot_M1::Robot_M1(Environment *environment, string file_name) : Robot(environment, file_name)
+Robot_M2::Robot_M2(Environment *environment, string file_name) : Robot(environment, file_name)
 {
     _environment = environment;
-    _bumper = new Bumper(environment);
+    _laser = new Laser(_environment);
     _batteryCapacity = getBatteryValue();
 }
 
-void Robot_M1::moveRobot()
+void Robot_M2::moveRobot()
 {
-    int sign = 1;
     list<Position> neighborsFree;
     Position robotPos = getRobotPos();
-    Position pos1, pos2;
+    Position startPos, pos;
 
     // Discharge the battery one unit of charge
     updateBattery(0, false);
 
+    startPos = Position(true, robotPos.x()-1, robotPos.y()-1);
     // Find free positions for the four directions
-    for(int i = 0; i < 2; i++)
-    {
-        if(i == 1) { sign = -1;}
+    // i - line / j - collumns
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
 
-        pos1 = Position(true, robotPos.x() + sign, robotPos.y());
-        pos2 = Position(true, robotPos.x(), robotPos.y() + sign);
+            pos = Position(true, startPos.x()+j, startPos.y()+i);
 
-        // Check positions pos1 and pos2 are valid positions
-        checkPos(pos1);
-        checkPos(pos2);
+            // Check if is a valid position
+            checkPos(pos);
 
-        // If each position is not an obstacle, the station position or a invalid position
-        // this position is saved in the list "neighborsFree"
-        if(!_bumper->checkObstacle(pos1) && pos1 != _environment->getStationPos() && !pos1.isInvalid())
-        {
-            neighborsFree.push_back(pos1);
-        }
-        if(!_bumper->checkObstacle(pos2) && pos2 != _environment->getStationPos() && !pos2.isInvalid())
-        {
-            neighborsFree.push_back(pos2);
+            // If "pos" is not an obstacle, the robot position, the station position or a invalid position
+            // this position is saved in the list "neighborsFree"
+            if(pos != _environment->getStationPos() && pos != robotPos && !pos.isInvalid())
+            {
+                neighborsFree.push_back(pos);
+            }
         }
     }
-
     // Define position to move
     // If neighborsFree.size() > 1 the position is chosen randomly
     if(neighborsFree.size() >= 1)
@@ -81,7 +74,7 @@ void Robot_M1::moveRobot()
     }
 }
 
-void Robot_M1::clean()
+void Robot_M2::clean()
 {
     Position robotPos;
     Position pos;
@@ -116,7 +109,7 @@ void Robot_M1::clean()
                 _environment->setPosValue(getRobotPos(), CLEANED); // set cell to CLEANED identifier
             }
         }
-
+        return;
         returnRobotToStation(); //return robot to station
         // if the battery is discharged, than the robot could not go back to the station in time
         if (batteryDischarged())
@@ -132,21 +125,24 @@ void Robot_M1::clean()
 }
 
 // Check if the robot position is out of matrix
-void Robot_M1::checkPos(Position &pos)
+void Robot_M2::checkPos(Position &pos)
 {
     if(pos.x() < 0 || pos.x() > (_environment->getDimensionX()-1))
     {
         pos.setInvalid();
     }
-
-    if(pos.y() < 0 || pos.y() > (_environment->getDimensionY()-1))
+     else if(pos.y() < 0 || pos.y() > (_environment->getDimensionY()-1))
+    {
+        pos.setInvalid();
+    }
+    else if(_laser->checkObstacle(pos))
     {
         pos.setInvalid();
     }
 }
 
 
-void Robot_M1::returnRobotToStation()
+void Robot_M2::returnRobotToStation()
 {
     Position robotPos, stationPos, robotPos_old;
     int deltaX, deltaY;
@@ -195,7 +191,7 @@ void Robot_M1::returnRobotToStation()
         pos1 = Position(true, robotPos.x() + (sign_dX), robotPos.y());
         checkPos(pos1);
         // check if its a valid position
-        if(!_bumper->checkObstacle(pos1) && !pos1.isInvalid() && deltaX!=0 && pos1.x()!=robotPos_old.x())
+        if(!_laser->checkObstacle(pos1) && !pos1.isInvalid() && deltaX!=0 && pos1.x()!=robotPos_old.x())
         {
             // move robot
             robotPos = pos1;
@@ -207,7 +203,7 @@ void Robot_M1::returnRobotToStation()
             pos2 = Position(true, robotPos.x(), robotPos.y() + sign_dY && pos2.y()!=robotPos_old.y());
             checkPos(pos2);
             // check if its a valid position
-            if(!_bumper->checkObstacle(pos2) && !pos2.isInvalid())
+            if(!_laser->checkObstacle(pos2) && !pos2.isInvalid())
             {
                 // move robot
                 robotPos = pos2;
@@ -220,7 +216,7 @@ void Robot_M1::returnRobotToStation()
                 further from the station */
                 pos3 = Position(true, robotPos.x(), robotPos.y() - sign_dY);
                 checkPos(pos3);
-                if(!_bumper->checkObstacle(pos3) && !pos3.isInvalid() && pos3.y()!=robotPos_old.y())
+                if(!_laser->checkObstacle(pos3) && !pos3.isInvalid() && pos3.y()!=robotPos_old.y())
                 {
                     //move robot
                     robotPos = pos3;
@@ -234,7 +230,7 @@ void Robot_M1::returnRobotToStation()
         {
             pos4 = Position(true, robotPos.x() - (sign_dX), robotPos.y());
             checkPos(pos4);
-            if(!_bumper->checkObstacle(pos4) && !pos4.isInvalid() && pos4.y()!=robotPos_old.y())
+            if(!_laser->checkObstacle(pos4) && !pos4.isInvalid() && pos4.y()!=robotPos_old.y())
             {
                 robotPos = pos4;
                 move_rob = 1;
