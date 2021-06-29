@@ -78,7 +78,12 @@ int main ()
 
     test->printGrid();
     cout<<"\n\n";
-    Robot_M2 *robot;
+    Robot *robot;
+    int robotModel = 0;
+    cout << "Choose the robot model (1 or 2): ";
+    cin >> robotModel;
+    cout <<"\n\n";
+
     int recommendedValue = 2*(test->getDimensionX()*test->getDimensionY());
 
     cout << "Choose one of the options bellow in order to insert robot into the grid: " << endl;
@@ -95,17 +100,31 @@ int main ()
         getline(cin,robot_name); //only one its not working
         cout << "Enter robot battery capacity (recommended value "<<recommendedValue<<"): ";
         cin >> battery_capacity;
-        robot= new Robot_M2(test, robot_name, battery_capacity);
+
+        if(robotModel == 1) {
+            robot= new Robot_M1(test, robot_name, battery_capacity);
+        } else {
+            robot= new Robot_M2(test, robot_name, battery_capacity);
+        }
 
     }
     else if (robot_data_opt==2)
     {
         robot_file_name = "robot.txt";
-        robot = new Robot_M2(test, robot_file_name);
+
+        if(robotModel == 1) {
+            robot = new Robot_M1(test, robot_file_name);
+        } else {
+            robot = new Robot_M2(test, robot_file_name);
+        }
     }
     else
     {
-        robot = new Robot_M2(test);
+        if(robotModel == 1) {
+            robot = new Robot_M1(test);
+        } else {
+            robot = new Robot_M2(test);
+        }
     }
     robot->clean();
     cout<<endl;
