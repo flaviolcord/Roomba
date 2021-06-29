@@ -179,7 +179,7 @@ void Robot_M2::turn_robot(Position old_pos, Position new_pos)
 
 void Robot_M2::returnRobotToStation()
 {
-    Position robotPos, stationPos;
+    Position robotPos, stationPos, robotPos_old;
     int deltaX, deltaY;
     //initialization of 'old' variables with any bigger value than deltaX and deltaY can have, so it passes the initial loop
     int deltaX_old(10000), deltaY_old(10000);
@@ -189,6 +189,7 @@ void Robot_M2::returnRobotToStation()
     Position pos; //variable to detect robot new position
     stationPos = _environment->getStationPos(); // get station position in grid
     robotPos = getRobotPos(); // get robot current position
+    robotPos_old = robotPos;
     bool trap; //auxiliary variable to identify traps
     //counter of the while loop for getting the robot movement (if counter_try > 4, the robot could not move - is trapped)
     int counter_try;
@@ -277,6 +278,7 @@ void Robot_M2::returnRobotToStation()
         }
 
         // update robot old position
+        robotPos_old = robotPos;
         deltaY_old = deltaY;
         deltaX_old = deltaX;
 
