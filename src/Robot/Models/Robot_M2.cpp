@@ -39,8 +39,9 @@ void Robot_M2::moveRobot()
     list<Position> neighborsFree;
     Position robotPos = getRobotPos();
     Position startPos, pos;
+    float old_orientation;
 
-    // Discharge the battery one unit of charge
+    // Discharge the battery one unit of charge for movement
     updateBattery(0, false);
 
     startPos = Position(true, robotPos.x()-1, robotPos.y()-1);
@@ -71,7 +72,10 @@ void Robot_M2::moveRobot()
 
         int idPos = _environment->generate_random(0, (neighborsFree.size()-1));
         advance(it, idPos);
+        old_orientation = _orientation;
         turn_robot(robotPos, *it);
+        // Discharge the battery one unit of charge for turning
+        if (old_orientation!=_orientation){updateBattery(0, false);}
         setRobotPos(*it);
 
 
@@ -110,7 +114,7 @@ void Robot_M2::clean()
             if(_environment->getPosValue(getRobotPos()) == UNCLEAN)
             {
                 // Clean
-                // Discharge the battery one unit of charge
+                // Discharge the battery one unit of charge for cleaning
                 updateBattery(0, false);
                 _cellUnclean--; //reduce the number of uncleaned cells
                 _environment->setPosValue(getRobotPos(), CLEANED); // set cell to CLEANED identifier
@@ -175,15 +179,17 @@ void Robot_M2::turn_robot(Position old_pos, Position new_pos)
 
 void Robot_M2::returnRobotToStation()
 {
-    Position robotPos, stationPos;
+    Position robotPos, stationPos, robotPos_old;
     int deltaX, deltaY;
     //initialization of 'old' variables with any bigger value than deltaX and deltaY can have, so it passes the initial loop
     int deltaX_old(10000), deltaY_old(10000);
     int sign_dX, sign_dY;
+    float old_orientation; //to find out if the robot is turning and, therefore, spending battery
     int move_rob; //variable to check if the robot has already moved (it is only allowed one move per iteration)
     Position pos; //variable to detect robot new position
     stationPos = _environment->getStationPos(); // get station position in grid
     robotPos = getRobotPos(); // get robot current position
+    robotPos_old = robotPos;
     bool trap; //auxiliary variable to identify traps
     //counter of the while loop for getting the robot movement (if counter_try > 4, the robot could not move - is trapped)
     int counter_try;
@@ -200,13 +206,13 @@ void Robot_M2::returnRobotToStation()
         deltaY = (stationPos.y() - robotPos.y());
 
         // if deltaX is negative, the closest that the robot will get to the station is if it decrements its X position
-        // if delts X is positive, the robot have to increment its X position
+        // if deltaX is positive, the robot have to increment its X position
         // ** THE SAME WRITTEN ABOVE OCCURS FOR deltaY:
         sign_dX = -1 * (deltaX < 0) + 1 * (deltaX > 0);
         sign_dY = -1 * (deltaY < 0) + 1 * (deltaY > 0);
 
-
-        /* However, deltaX==0 and the robot cannot move closer to the station in Y, the code will
+        /* Explaining the "if" statement written bellow (and also, part of the while loop):
+        If deltaX==0 and the robot cannot move closer to the station in Y, the code will
         try to move the robot in the X direction (this is considered inside the while loop).
         When it moves further in X, (abs(deltaX_old)<abs(deltaX)) is true, so the code understands that
         the next movement cannot be in X towards the station, because it will go back to the known trap.
@@ -272,11 +278,21 @@ void Robot_M2::returnRobotToStation()
         }
 
         // update robot old position
+        robotPos_old = robotPos;
         deltaY_old = deltaY;
         deltaX_old = deltaX;
+
+        //turn robot
+        old_orientation = _orientation;
+        turn_robot(robotPos_old,pos);
+
+        // Discharge the battery one unit of charge for turning
+        if (old_orientation!=_orientation){updateBattery(0, false);}
+
         // move robot
         robotPos = pos;
-        // if the robot has moved, update battery level
+
+        // Discharge the battery one unit of charge for movement
         updateBattery(0, false);
 
     }
