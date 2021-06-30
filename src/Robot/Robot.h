@@ -26,7 +26,6 @@ public:
     // Setters
     void setRobotPos (Position pos) {_currentPos = pos;}
     Environment* getEvironment() { return _environment;}
-    //virtual void clean();
 
 private:
     // Var

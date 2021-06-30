@@ -83,6 +83,10 @@ int main ()
     cout << "Choose the robot model (1 or 2): ";
     cin >> robotModel;
     cout <<"\n\n";
+    if (robotModel!=1 && robotModel!=2){
+        cout << "Not a valid number for a robot model. Please try again." << endl;
+        return 0;
+    }
 
     int recommendedValue = 2*(test->getDimensionX()*test->getDimensionY());
 
@@ -103,7 +107,7 @@ int main ()
 
         if(robotModel == 1) {
             robot= new Robot_M1(test, robot_name, battery_capacity);
-        } else {
+        }else{
             robot= new Robot_M2(test, robot_name, battery_capacity);
         }
 
